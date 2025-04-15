@@ -1,0 +1,16 @@
+{"time":"2025-04-15T14:22:14.253922262+05:30","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/home/kanchan/Downloads/Courses/DL_DA6401/CS23S025-Assignment-2_DA6401-DL/PartA/wandb/run-20250415_142214-dr5rdo1w/logs/debug-core.log"}
+{"time":"2025-04-15T14:22:14.35889172+05:30","level":"INFO","msg":"created new stream","id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:14.358921747+05:30","level":"INFO","msg":"stream: started","id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:14.358966813+05:30","level":"INFO","msg":"writer: Do: started","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:14.358979286+05:30","level":"INFO","msg":"handler: started","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:14.359056633+05:30","level":"INFO","msg":"sender: started","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:14.751444681+05:30","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-04-15T14:22:14.865476807+05:30","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-04-15T14:22:14.865970964+05:30","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-04-15T14:22:15.843439878+05:30","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"updating run config","runtime_seconds":0.032812136}],"total_operations":1}}
+{"time":"2025-04-15T14:22:16.739732144+05:30","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-04-15T14:22:17.078239503+05:30","level":"INFO","msg":"stream: closing","id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:17.078256555+05:30","level":"INFO","msg":"handler: closed","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:17.078265031+05:30","level":"INFO","msg":"writer: Close: closed","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:17.078279339+05:30","level":"INFO","msg":"sender: closed","stream_id":"dr5rdo1w"}
+{"time":"2025-04-15T14:22:17.078325616+05:30","level":"INFO","msg":"stream: closed","id":"dr5rdo1w"}
