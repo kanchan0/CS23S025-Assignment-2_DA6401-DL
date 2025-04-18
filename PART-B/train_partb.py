@@ -18,7 +18,7 @@ seed_everything(42)
 
 def train(wandb_configs, args):
 
-    # Initialise wandb
+    # Initialise wandb, here i am using freeze all except the last classification layer
     run_name = "EfficientNetV2_Freeze_All"
     wandb.init(
         config=wandb_configs,
