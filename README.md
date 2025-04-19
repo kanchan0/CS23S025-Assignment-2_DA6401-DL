@@ -13,7 +13,6 @@ Convolution Neural Networks
 ### Common files
 - The following files are common to both Part A and Part B folders.
 - **dataset.py:** Loads the dataset
-- **wandbConfigs.py:** Contains helper code for setting wandb configs and run/ sweep names
 ### Instructions to Run
 
 - Install the following libraries if not present in your system using the command `pip install library_name`
