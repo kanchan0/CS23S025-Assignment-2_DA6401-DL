@@ -4,7 +4,6 @@ from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch import Trainer
 from lightning.fabric.utilities.seed import seed_everything
 from pathlib import Path
-
 from convolutional import convNet
 from dataset import iNaturalistDataModule
 
@@ -77,6 +76,7 @@ class wandbconfig:
 
 device = "gpu" if torch.cuda.is_available() else "cpu"
 seed_everything(42)
+
 sweep_configs = {
     "name": "Local Machine Larger Model Sweep",
     "metric": {"name": "validation_accuracy", "goal": "maximize"},
@@ -104,11 +104,9 @@ sweep_configs = {
 
 hyperparameter_defaults = dict()
 
-
 def train():
 
     # Initialise wandb
-
     wandb.init(
         config=hyperparameter_defaults, project="CS23S025-Assignment-2-DL", 
         entity="cs23s025-indian-institute-of-technology-madras"
@@ -117,7 +115,6 @@ def train():
     wandb_configs = wandb.config
 
     sweep_name = wandbconfig.sweep_name(wandb_configs)
-
     wandb.run.name = sweep_name
 
     model = convNet(
@@ -153,12 +150,10 @@ def train():
     trainer.fit(model, data)
     trainer.validate(model, data)
     # trainer.test(model, data)
-
     wandb.finish()
 
 
 if __name__ == "__main__":
-
     sweep_id = wandb.sweep(sweep_configs,
                            entity="cs23s025-indian-institute-of-technology-madras",
                            project="CS23S025-Assignment-2-DL")

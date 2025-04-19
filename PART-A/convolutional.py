@@ -7,21 +7,21 @@ class convNet(L.LightningModule):
     def __init__(
         self,
         img_size,
-        activation,
-        num_filters,
-        filter_size,
-        filter_org,
+        activation,          # Activation function name: relu, gelu, mish, silu
+        num_filters,         # Number of filters in the first conv layer
+        filter_size,          # Kernel size for all conv layers
+        filter_org,         # Multiplicative factor for filter count per laye
         stride,
         padding,
-        dense_neurons,
+        dense_neurons,      # Number of neurons in the dense (fc1) layer
         learning_rate,
         optimizer,
         dropout,
         usedropout,
         batchnorm,
     ):
+        
         super().__init__()
-
         # self.img_size = img_size
         self.activation = activation
         self.num_filters = num_filters
@@ -37,46 +37,36 @@ class convNet(L.LightningModule):
 
         # Define convolutional layers
         self.conv1 = nn.Conv2d(
-            in_channels=3,
-            out_channels=self.num_filters,
-            kernel_size=self.kernel_size,
-            stride=self.stride,
+            in_channels=3,  out_channels=self.num_filters,
+            kernel_size=self.kernel_size,  stride=self.stride,
             padding=self.padding,
         )
         self.bn1 = nn.BatchNorm2d(num_features=self.num_filters)
 
         self.conv2 = nn.Conv2d(
-            in_channels=self.num_filters,
-            out_channels=self.num_filters * filter_org,
-            kernel_size=self.kernel_size,
-            stride=self.stride,
+            in_channels=self.num_filters, out_channels=self.num_filters * filter_org,
+            kernel_size=self.kernel_size,   stride=self.stride,
             padding=self.padding,
         )
         self.bn2 = nn.BatchNorm2d(num_features=self.conv2.out_channels)
 
         self.conv3 = nn.Conv2d(
-            in_channels=self.conv2.out_channels,
-            out_channels=self.conv2.out_channels * filter_org,
-            kernel_size=self.kernel_size,
-            stride=self.stride,
+            in_channels=self.conv2.out_channels, out_channels=self.conv2.out_channels * filter_org,
+            kernel_size=self.kernel_size, stride=self.stride,
             padding=self.padding,
         )
         self.bn3 = nn.BatchNorm2d(num_features=self.conv3.out_channels)
 
         self.conv4 = nn.Conv2d(
-            in_channels=self.conv3.out_channels,
-            out_channels=self.num_filters * filter_org,
-            kernel_size=self.kernel_size,
-            stride=self.stride,
+            in_channels=self.conv3.out_channels, out_channels=self.num_filters * filter_org,
+            kernel_size=self.kernel_size, stride=self.stride,
             padding=self.padding,
         )
         self.bn4 = nn.BatchNorm2d(num_features=self.conv4.out_channels)
 
         self.conv5 = nn.Conv2d(
-            in_channels=self.conv4.out_channels,
-            out_channels=self.num_filters * filter_org,
-            kernel_size=self.kernel_size,
-            stride=self.stride,
+            in_channels=self.conv4.out_channels, out_channels=self.num_filters * filter_org,
+            kernel_size=self.kernel_size, stride=self.stride,
             padding=self.padding,
         )
         self.bn5 = nn.BatchNorm2d(num_features=self.conv5.out_channels)
@@ -101,32 +91,21 @@ class convNet(L.LightningModule):
 
         self.flatten = nn.Flatten()
 
-        c1s = int(
-            (((img_size - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2
-        )
+        c1s = int((((img_size - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2 )
 
-        c2s = int(
-            (((c1s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2
-        )
+        c2s = int((((c1s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2)
 
-        c3s = int(
-            (((c2s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2
-        )
+        c3s = int((((c2s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2)
 
-        c4s = int(
-            (((c3s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2
-        )
+        c4s = int((((c3s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2)
 
         c5s = int(
             (((c4s - self.kernel_size + (2 * self.padding)) / self.stride) + 1) / 2
         )
 
         # print(f"c1s_{c1s}_c2s_{c2s}_c3s_{c3s}_c4s_{c4s}_c5s_{c5s}_out_{self.conv5.out_channels}")
-
         flatten_neurons = int(c5s * c5s * self.conv5.out_channels)
-
         # print(f"multi_{c5s*c5s*self.conv5.out_channels}_flat_{flatten_neurons}")
-
         # Define fully connected layers
         self.fc1 = nn.Linear(flatten_neurons, dense_neurons)
         self.fc2 = nn.Linear(dense_neurons, 10)
@@ -187,6 +166,24 @@ class convNet(L.LightningModule):
 
         return x
 
+    def configure_optimizers(self):
+        if self.optimizer.lower() == "adam":
+
+            return optim.Adam(self.parameters(), lr=self.lr)
+
+        elif self.optimizer.lower() == "sgd":
+
+            return optim.SGD(self.parameters(), lr=self.lr)
+
+        elif self.optimizer.lower() == "nadam":
+
+            return optim.NAdam(self.parameters(), lr=self.lr)
+
+        elif self.optimizer.lower() == "rmsprop":
+
+            return optim.RMSprop(self.parameters(), lr=self.lr)
+
+    
     def training_step(self, batch, batch_idx):
         loss, scores, y, accuracy = self._common_step(batch, batch_idx)
 
@@ -238,19 +235,4 @@ class convNet(L.LightningModule):
         preds = torch.argmax(scores, dim=1)
         return preds
 
-    def configure_optimizers(self):
-        if self.optimizer.lower() == "adam":
-
-            return optim.Adam(self.parameters(), lr=self.lr)
-
-        elif self.optimizer.lower() == "sgd":
-
-            return optim.SGD(self.parameters(), lr=self.lr)
-
-        elif self.optimizer.lower() == "nadam":
-
-            return optim.NAdam(self.parameters(), lr=self.lr)
-
-        elif self.optimizer.lower() == "rmsprop":
-
-            return optim.RMSprop(self.parameters(), lr=self.lr)
+    
