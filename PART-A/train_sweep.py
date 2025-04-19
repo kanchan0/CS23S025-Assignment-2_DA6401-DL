@@ -6,7 +6,7 @@ from lightning.fabric.utilities.seed import seed_everything
 from pathlib import Path
 from convolutional import convNet
 from dataset import iNaturalistDataModule
-
+from lightning.pytorch.callbacks import ModelCheckpoint
 class wandbconfig:
 
     def set_configs(args):
@@ -132,9 +132,18 @@ def train():
         usedropout=wandb_configs.usedropout,
         batchnorm=wandb_configs.batchnorm,
     )
+    checkpoint_callback = ModelCheckpoint(
+    monitor="validation_accuracy",
+    mode="max",
+    save_top_k=1,
+    dirpath="/kaggle/working/output/",
+    filename="best_model",
+    save_weights_only=False  # Save full model
+    )
 
+    
     data = iNaturalistDataModule(
-        data_dir=Path(""),
+        data_dir=Path("/home/kanchan/Downloads/nature_12K"),
         batch_size=wandb_configs.batch_size,
         num_workers=2,
         img_size=wandb_configs.img_size,
@@ -142,6 +151,7 @@ def train():
     )
     trainer = Trainer(
         accelerator=device,
+        callbacks=[checkpoint_callback],
         min_epochs=1,
         max_epochs=wandb_configs.epochs,
         logger=wandb_logger,
@@ -150,6 +160,8 @@ def train():
     trainer.fit(model, data)
     trainer.validate(model, data)
     # trainer.test(model, data)
+    print("Best model path:", checkpoint_callback.best_model_path)
+    best_model_path = checkpoint_callback.best_model_path
     wandb.finish()
 
 
